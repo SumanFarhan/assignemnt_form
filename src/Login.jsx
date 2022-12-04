@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState ,createContext, useContext} from 'react';
 import { Button, Checkbox, Form, Input } from 'antd';
+import { Link } from 'react-router-dom';
 
 
 const Login = () => {
@@ -9,9 +10,11 @@ const Login = () => {
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
     };
+
     return (
         <>
         <div className="login">
+        <Link to="/">Signup</Link>
             <Form
                 name="basic"
                 labelCol={{
@@ -68,7 +71,7 @@ const Login = () => {
                     }}
                 >
                     <Button type="primary" htmlType="submit">
-                        Submit
+                        Login
                     </Button>
                 </Form.Item>
             </Form>

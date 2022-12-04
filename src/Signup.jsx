@@ -1,7 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, createContext, useContext } from 'react';
 import { Button, Checkbox, Form, Input } from 'antd';
+import { Link } from 'react-router-dom';
 
-const Signup = () => {
+// const authContext = createContext({ item: [], setItem: (item, userData) => { } })
+// const ContextComponent = () => {
+//     const [item, setItem] = useState([])
+//     return <>
+//         <authContext.Provider value={{ item, setItem }}>
+
+//         </authContext.Provider>
+//     </>
+// }
+
+// export default ContextComponent
+ export const authContext = createContext({ item: [], setItem: (item,userData) => { }})
+export default function ContextComponent() {
+    const [item, setItem] = useState([])
+    return <>
+        <authContext.Provider value={{ item, setItem }}>
+            <Signup/>
+        </authContext.Provider>
+    </>
+}
+
+export function Signup() {
     const [userData, setuserData] = useState({
         firstname: "",
         lastname: "",
@@ -17,16 +39,24 @@ const Signup = () => {
             }
         })
     }
+    const { item, setItem } = useContext(authContext);
+    const btn = () => {
+        setItem(() => {
+            return console.log([...item, userData])
+        })
+    }
     const onFinish = (values) => {
         console.log('Success:', values);
     };
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
     };
+
     return (
         <div className="signUp">
+            <Link to="/welcome">Dashboard</Link>
             <Form
-                // name="basic"
+                name="basic"
                 labelCol={{
                     span: 8,
                 }}
@@ -111,17 +141,13 @@ const Signup = () => {
                         span: 16,
                     }}
                 >
-                    <Button type='primary' htmlType='submit' >
-                        Submit
+                    <Button type='primary' htmlType='submit' onClick={btn}>
+                        Signup
                     </Button>
                 </Form.Item>
             </Form>
-            <p>{userData.firstname}</p>
-            <p>{userData.lastname}</p>
-            <p>{userData.username}</p>
-            <p>{userData.password}</p>
         </div>
     )
 }
 
-export default Signup
+// export default Signup
