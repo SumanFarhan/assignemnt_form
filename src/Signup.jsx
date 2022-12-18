@@ -1,64 +1,38 @@
-import React, { useState, createContext, useContext } from 'react';
+import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { Button, Checkbox, Form, Input } from 'antd';
-import { Link } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux'
+import { SignupReducer } from './Redux/Reducer'
 
-// const authContext = createContext({ item: [], setItem: (item, userData) => { } })
-// const ContextComponent = () => {
-//     const [item, setItem] = useState([])
-//     return <>
-//         <authContext.Provider value={{ item, setItem }}>
-
-//         </authContext.Provider>
-//     </>
-// }
-
-// export default ContextComponent
- export const authContext = createContext({ item: [], setItem: (item,userData) => { }})
-export default function ContextComponent() {
-    const [item, setItem] = useState([])
-    return <>
-        <authContext.Provider value={{ item, setItem }}>
-            <Signup/>
-        </authContext.Provider>
-    </>
-}
-
-export function Signup() {
-    const [userData, setuserData] = useState({
-        firstname: "",
-        lastname: "",
+const Signup = () => {
+    const onFinish = () => {
+        alert('User Registration SuccessFully!')
+    }
+    const [signedIn, setsignedIn] = useState({
+        fname: "",
+        lname: "",
         username: "",
-        password: "",
-    })
-    const add = (event) => {
+        password: ""
+    });
+
+    const record = useSelector((state) => state.user.signupData)
+    const dispatch = useDispatch()
+
+    const Setting = (event) => {
         const { name, value } = event.target
-        setuserData((preValues) => {
+        setsignedIn((data) => {
             return {
-                ...preValues,
+                ...data,
                 [name]: value
             }
         })
     }
-    const { item, setItem } = useContext(authContext);
-    const btn = () => {
-        setItem(() => {
-            return console.log([...item, userData])
-        })
-    }
-    const onFinish = (values) => {
-        console.log('Success:', values);
-    };
-    const onFinishFailed = (errorInfo) => {
-        console.log('Failed:', errorInfo);
-    };
 
     return (
-        <div className="signUp">
-            <Link to="/welcome">Dashboard</Link>
+        <>
             <Form
-                name="basic"
                 labelCol={{
-                    span: 8,
+                    span: 6,
                 }}
                 wrapperCol={{
                     span: 12,
@@ -67,38 +41,37 @@ export function Signup() {
                     remember: true,
                 }}
                 onFinish={onFinish}
-                onFinishFailed={onFinishFailed}>
+                autoComplete="off"
+            >
+
                 <Form.Item
                     label="First Name"
-                    name="firstname"
+                    name="fname"
                     rules={[
                         {
                             required: true,
-                            message: 'Please input your firstname !',
+                            message: 'Please input your First Name!',
                         },
                     ]}
                 >
-                    <Input name="firstname"
-                        value={userData.firstname}
-                        onChange={add} />
+                    <Input name="fname" onChange={Setting} value={signedIn.fname} />
                 </Form.Item>
+
                 <Form.Item
                     label="Last Name"
-                    name="lastname"
+                    name="lname"
                     rules={[
                         {
                             required: true,
-                            message: 'Please input your lastname!',
+                            message: 'Please input your Last Name!',
                         },
                     ]}
                 >
-                    <Input name="lastname"
-                        value={userData.lastname}
-                        onChange={add} />
+                    <Input name="lname" onChange={Setting} value={signedIn.lname} />
                 </Form.Item>
+
                 <Form.Item
-                    label="Username"
-                    name="username"
+                    label="Username" name="username"
                     rules={[
                         {
                             required: true,
@@ -106,14 +79,11 @@ export function Signup() {
                         },
                     ]}
                 >
-                    <Input name="username"
-                        value={userData.username}
-                        onChange={add} />
+                    <Input name="username" onChange={Setting} value={signedIn.username} />
                 </Form.Item>
 
                 <Form.Item
-                    label="Password"
-                    name="password"
+                    label="Password" name="password"
                     rules={[
                         {
                             required: true,
@@ -121,10 +91,9 @@ export function Signup() {
                         },
                     ]}
                 >
-                    <Input.Password name="password"
-                        value={userData.password}
-                        onChange={add} />
+                    <Input.Password name="password" onChange={Setting} value={signedIn.password} />
                 </Form.Item>
+
                 <Form.Item
                     name="remember"
                     valuePropName="checked"
@@ -135,19 +104,27 @@ export function Signup() {
                 >
                     <Checkbox>Remember me</Checkbox>
                 </Form.Item>
+
                 <Form.Item
                     wrapperCol={{
                         offset: 8,
                         span: 16,
                     }}
                 >
-                    <Button type='primary' htmlType='submit' onClick={btn}>
-                        Signup
+                    <Button type="primary" htmlType="submit"
+                        onClick={() => dispatch(SignupReducer(signedIn))}>
+                        Submit
                     </Button>
+                    <br />
+                    <br />
+                    <Link to="/login">Login</Link>
                 </Form.Item>
             </Form>
-        </div>
+        </>
+
     )
 }
 
-// export default Signup
+
+export default Signup
+
